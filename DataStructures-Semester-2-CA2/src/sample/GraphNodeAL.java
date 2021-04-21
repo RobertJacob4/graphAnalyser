@@ -7,7 +7,7 @@ import java.util.List;
 public class GraphNodeAL<T> implements Serializable{
 
     public T data;
-    public int nodeValue;
+    public int nodeValue = Integer.MAX_VALUE;
     public double x,y;
 
     public ArrayList<GraphLinkAL> adjList;
@@ -28,6 +28,17 @@ public class GraphNodeAL<T> implements Serializable{
         this.x = landmark.x;
         this.y = landmark.y;
     }
+
+
+    public void connectToNodeDirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int pathCost){
+        adjList.add(new GraphLinkAL(startNode, destNode, pathCost));
+    }
+
+    public void connectToNodeUndirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int pathCost){
+        adjList.add(new GraphLinkAL(startNode, destNode, pathCost));
+        destNode.adjList.add(new GraphLinkAL(startNode, destNode, pathCost));
+    }
+
 
     public void setData(T data) {
         this.data = data;

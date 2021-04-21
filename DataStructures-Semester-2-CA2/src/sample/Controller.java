@@ -1,13 +1,10 @@
 package sample;
-
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.image.*;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import java.io.File;
 
 public class Controller {
 
@@ -19,15 +16,10 @@ public class Controller {
     public Button blackWhiteButton;
 
 
-    public void chooseFile(ActionEvent actionEvent) {
-        FileChooser fc = new FileChooser();
+    public void displayFile(ActionEvent actionEvent) {
         Stage stage = new Stage();
-        File file = fc.showOpenDialog(stage);
-
-        if (file != null) {
-            blankMapImage = new Image(file.toURI().toString(), 216, 216, false, true);
-            originalImageView.setImage(blankMapImage);
-        }
+        blankMapImage = new Image("WaterfordMap.jpg", 700, 400, true,false);
+        originalImageView.setImage(blankMapImage);
     }
 
     public WritableImage blackWhiteConversion(Image blankImage) {
@@ -45,7 +37,7 @@ public class Controller {
                 double green = color.getGreen() * 255;
                 double blue = color.getBlue() * 255;
                 
-                if (red > 205 && blue > 165 && green > 220) {
+                if (red > 205 && blue > 160 && green > 225) {
                     pw.setColor(r, c, Color.WHITE);
                 } else {
                     pw.setColor(r, c, Color.BLACK);
