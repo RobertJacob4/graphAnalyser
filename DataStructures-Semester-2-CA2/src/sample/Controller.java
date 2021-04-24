@@ -1,17 +1,27 @@
 package sample;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+
 import javafx.scene.control.RadioButton;
 import javafx.scene.image.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
-public class Controller {
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
+public class Controller implements Initializable {
 
     public Image blankMapImage;
     public double xCoord, yCoord;
@@ -77,6 +87,7 @@ public class Controller {
                 System.out.print(yCoordStart);
 
                 Circle startMarker = new Circle( e.getX(),e.getY(),3,Color.GREEN);
+                startMarker.setId("Start");
                 startButton.setSelected(false);
 
                 startMarker.setTranslateX(originalImageView.getLayoutX());
@@ -91,7 +102,9 @@ public class Controller {
                 System.out.print(xCoordEnd);
                 System.out.print(yCoordEnd);
 
+
                 Circle  endMarker = new Circle( e.getX(),e.getY(),3,Color.RED);
+                endMarker.setId("Destination");
                 endButton.setSelected(false);
 
                 endMarker.setTranslateX(originalImageView.getLayoutX());
@@ -105,8 +118,10 @@ public class Controller {
                 System.out.print(xCoordStart);
                 System.out.print(yCoordStart);
 
-                landmarkButton.setSelected(false);
+
                 Circle  landMarker = new Circle( e.getX(),e.getY(),3,Color.BLUE);
+                landMarker.setId("Landmark");
+                landmarkButton.setSelected(false);
 
                 landMarker.setTranslateX(originalImageView.getLayoutX());
                 landMarker.setTranslateY(originalImageView.getLayoutY());
@@ -114,6 +129,66 @@ public class Controller {
             }
         });
     }
+
+    public void setGraphArray(){
+        int[] graphArray;
+        graphArray = makeGraphArray(blackWhiteConversion(blankMapImage));
+    }
+
+    public int[] makeGraphArray(WritableImage image){
+
+        double width = image.getWidth(), height = image.getHeight();
+        PixelReader pr = image.getPixelReader();
+        PixelWriter pw = image.getPixelWriter();
+
+        int[] graphArray = new int[(int) (width * height)];
+
+        for(int c = 0; c < height; c++ ){
+            for(int r = 0; r < width; r++){
+
+                int current = (int) (c * width + r);
+                Color color = pr.getColor(c, r);
+                if(color == Color.WHITE){
+                    graphArray[current] = 0;
+                }else{
+                    graphArray[current] = -1;
+                }
+            }
+        }
+        return graphArray;
+    }
+
+
+
+    public void clearPoints(ActionEvent actionEvent) {
+
+        List<Circle> circleList = new ArrayList<>();
+        for (Node x : ((AnchorPane) originalImageView.getParent()).getChildren()) {
+            if (x instanceof Circle)
+                circleList.add((Circle) x);
+        }
+        ((Pane) originalImageView.getParent()).getChildren().removeAll(circleList);
+    }
+
+    /**
+     * Method exits the program.
+     */
+    public void quit(ActionEvent actionEvent) {
+        Platform.exit();
+    }
+
+    public void saveGraph() throws Exception {
+        Utilities.save();
+    }
+
+    public void loadGraph() throws Exception {
+        Utilities.load();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+    }
+
 }
 
 
