@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GraphNodeAL<T> implements Serializable{
-
+public class GraphNodeAL<T> implements Serializable {
     public T data;
     public int nodeValue = Integer.MAX_VALUE;
     public double x,y;
-
+    //    public ArrayList<GraphLinkAL> links;
     public ArrayList<GraphLinkAL> adjList;
     public ArrayList<GraphNodeAL> adjNodeList;
+
 
     public GraphNodeAL(double x,double y) {
         this.data = data;
@@ -29,20 +29,25 @@ public class GraphNodeAL<T> implements Serializable{
         this.y = landmark.y;
     }
 
-
-    public void connectToNodeDirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int pathCost){
-        adjList.add(new GraphLinkAL(startNode, destNode, pathCost));
+    public void connectToNodeDirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int cost) {
+        adjList.add(new GraphLinkAL(startNode, destNode, cost));
     }
 
-    public void connectToNodeUndirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int pathCost){
-        adjList.add(new GraphLinkAL(startNode, destNode, pathCost));
-        destNode.adjList.add(new GraphLinkAL(startNode, destNode, pathCost));
+    public void connectToNodeUndirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int cost) {
+        adjList.add(new GraphLinkAL(startNode, destNode, cost));
+        destNode.adjList.add(new GraphLinkAL(destNode, startNode, cost));
     }
 
-
+    public void connectToNodeUndirected(GraphNodeAL<T> startNode, GraphNodeAL<T> destNode, int cost, boolean hist, boolean easy) {
+        adjList.add(new GraphLinkAL(startNode, destNode, cost, hist, easy));
+        destNode.adjList.add(new GraphLinkAL(destNode, startNode, cost, hist,easy));
+    }
     public void setData(T data) {
         this.data = data;
     }
+
+
+
 
     public int getNodeValue() {
         return nodeValue;
@@ -62,5 +67,10 @@ public class GraphNodeAL<T> implements Serializable{
 
     public T getData() {
         return data;
+    }
+
+    @Override
+    public String toString() {
+        return data.toString();
     }
 }

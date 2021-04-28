@@ -1,38 +1,50 @@
 package sample;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Utilities {
 
-    public static ArrayList<GraphNodeAL> graphList;
-    public static ArrayList<GraphNodeAL> wayPoints;
-    public static ArrayList<GraphNodeAL> avoidPoint;
+    public static ObservableList<Landmark> landmarks;
+    public static ArrayList<GraphNodeAL> graphlist;
+    public static ArrayList<GraphNodeAL> waypoints;
+    public static ArrayList<GraphNodeAL> avoids;
 
-
-    public void createNodes(){
-        graphList = new ArrayList<>();
-        wayPoints = new ArrayList<>();
-        avoidPoint = new ArrayList<>();
+    public static void createLandmarkList() {
+        landmarks = FXCollections.observableArrayList();
     }
 
-    public static void load() throws Exception
-    {
-        XStream xstream = new XStream(new DomDriver());
-        ObjectInputStream is = xstream.createObjectInputStream(new FileReader("graphlist.xml"));
-        graphList = (ArrayList<GraphNodeAL>) is.readObject();
-        is.close();
+
+    public static void createGraphList() {
+        graphlist = new ArrayList<>();
+        waypoints = new ArrayList<>();
+        avoids = new ArrayList<>();
     }
 
-    public static void save() throws Exception
-    {
-        XStream xstream = new XStream(new DomDriver());
-        ObjectOutputStream out = xstream.createObjectOutputStream(new FileWriter("graphlist.xml"));
-        out.writeObject(graphList);
-        out.close();
+    public static void save() {
+        try {
+            FileOutputStream fileOut = new FileOutputStream("resource\\graphlist.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(graphlist);
+            out.close();
+            fileOut.close();
+        } catch( Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void load() {
+        try {
+            FileInputStream fileIn = new FileInputStream("resource\\graphlist.txt");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            graphlist.addAll((ArrayList)in.readObject());
+            fileIn.close();
+            in.close();
+        } catch (Exception e) {
+            System.out.println("Load Failure");
+        }
     }
 
 }

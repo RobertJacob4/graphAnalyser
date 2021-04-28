@@ -1,76 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane alignment="center" hgap="10" prefHeight="708.0" prefWidth="957.0" vgap="10" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
-   <columnConstraints>
-      <ColumnConstraints />
-      <ColumnConstraints />
-      <ColumnConstraints />
-      <ColumnConstraints />
-      <ColumnConstraints />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints />
-   </rowConstraints>
-   <children>
-      <TabPane prefHeight="708.0" prefWidth="1039.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab text="Untitled Tab 1">
-            <content>
-              <AnchorPane fx:id="anchorPane1" minHeight="0.0" minWidth="0.0" prefHeight="679.0" prefWidth="981.0">
-                     <children>
-                        <ImageView fx:id="originalImageView" fitHeight="400.0" fitWidth="700.0" layoutX="62.0" layoutY="204.0" pickOnBounds="true" preserveRatio="true" />
-                        <Label layoutX="252.0" layoutY="14.0" text="Original Image" />
-                        <Button fx:id="chooseFileButton" layoutX="546.0" layoutY="44.0" mnemonicParsing="false" onAction="#displayFile" prefHeight="42.0" prefWidth="103.0" text="Display Image" />
-                        <Button fx:id="blackWhiteButton" layoutX="545.0" layoutY="111.0" mnemonicParsing="false" onAction="#displayBlackWhiteImage" prefHeight="49.0" prefWidth="105.0" text="Convert Image" />
-                        <RadioButton fx:id="startButton" layoutX="88.0" layoutY="65.0" mnemonicParsing="false" onMouseClicked="#markWaypoint" text="Select Start" />
-                        <RadioButton fx:id="endButton" layoutX="209.0" layoutY="65.0" mnemonicParsing="false" text="Select End" />
-                        <RadioButton fx:id="landmarkButton" layoutX="331.0" layoutY="65.0" mnemonicParsing="false" text="Select Landmark" />
-                        <Button fx:id="quitButton" layoutX="848.0" layoutY="29.0" mnemonicParsing="false" onAction="#quit" text="Quit" textFill="RED">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="saveButton" layoutX="746.0" layoutY="29.0" mnemonicParsing="false" onAction="#saveGraph" prefHeight="30.0" prefWidth="49.0" text="Save" textFill="#0058bc">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="loadButton" layoutX="745.0" layoutY="82.0" mnemonicParsing="false" onAction="#loadGraph" text="Load" textFill="#1a9e2a">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="clearPointsButton" layoutX="745.0" layoutY="179.0" mnemonicParsing="false" onAction="#clearPoints" text="Clear Points">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-          <Tab text="Untitled Tab 2">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <Label layoutX="283.0" layoutY="14.0" text="Black / White" />
-                        <ImageView fx:id="blackWhiteImageView" fitHeight="400.0" fitWidth="700.0" layoutX="76.0" layoutY="160.0" pickOnBounds="true" preserveRatio="true" />
-                     </children></AnchorPane>
-            </content>
-          </Tab>
-        </tabs>
-      </TabPane>
-   </children>
-</GridPane>
+<VBox prefHeight="800.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+    <children>
+        <MenuBar VBox.vgrow="NEVER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="New" />
+                        <MenuItem mnemonicParsing="false" text="Open…" />
+                        <Menu mnemonicParsing="false" text="Open Recent" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                        <MenuItem mnemonicParsing="false" text="Save" />
+                        <MenuItem mnemonicParsing="false" text="Save As…" />
+                        <MenuItem mnemonicParsing="false" text="Revert" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Preferences…" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Quit" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Undo" />
+                        <MenuItem mnemonicParsing="false" text="Redo" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Cut" />
+                        <MenuItem mnemonicParsing="false" text="Copy" />
+                        <MenuItem mnemonicParsing="false" text="Paste" />
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Select All" />
+                        <MenuItem mnemonicParsing="false" text="Unselect All" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="800.0" prefWidth="1220.0" VBox.vgrow="ALWAYS">
+            <children>
+                <TabPane layoutX="910.0" layoutY="-2.0" prefHeight="771.0" prefWidth="328.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <Tab text="Navigation">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="755.0" prefWidth="372.0">
+                                    <children>
+                                          <Button fx:id="dijkstrasStart" layoutX="200.0" layoutY="156.0" mnemonicParsing="false" onAction="#findRouteDijkstras" text="Dijstras" />
+                                          <ComboBox fx:id="searchModifier" layoutX="31.0" layoutY="202.0" prefWidth="150.0" />
+                                          <ComboBox fx:id="dijkstrasButton" layoutX="31.0" layoutY="156.0" prefWidth="150.0" promptText="Dijkstra Choice" />
+                                          <Button fx:id="bfsButton" layoutX="200.0" layoutY="202.0" mnemonicParsing="false" onAction="#breadthFirstSearch" text="BFS" />
+                              <Label layoutX="121.0" layoutY="99.0" text="Routes">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                                          <RadioButton fx:id="usePointerStartButton" layoutX="72.0" layoutY="298.0" mnemonicParsing="false" text="Use Pointer For Start" />
+                                          <RadioButton fx:id="chooseStartButton" layoutX="75.0" layoutY="327.0" mnemonicParsing="false" text="Select As Start" />
+                                          <ComboBox fx:id="selectStartPointCombo" layoutX="51.0" layoutY="358.0" prefHeight="26.0" prefWidth="194.0" promptText="Select Starting Location" />
+                                          <Button fx:id="clearSelectionButton" layoutX="18.0" layoutY="52.0" mnemonicParsing="false" onAction="#setClearSelection" text="Clear Selection" />
+                                          <RadioButton fx:id="toggleLabelsButton" layoutX="114.0" layoutY="637.0" mnemonicParsing="false" text="Toggle Labels" />
+                                          <RadioButton fx:id="chooseDestButton" layoutX="71.0" layoutY="489.0" mnemonicParsing="false" text="Select As Destination" />
+                                          <RadioButton fx:id="usePointerDestButton" layoutX="65.0" layoutY="461.0" mnemonicParsing="false" text="Use Pointer For Destination" />
+                                          <ComboBox fx:id="selectEndPointCombo" layoutX="50.0" layoutY="518.0" prefHeight="26.0" prefWidth="196.0" promptText="Select Destination" />
+                              <Label layoutX="106.0" layoutY="247.0" text="Start Point" textFill="#048000">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="123.0" layoutY="418.0" text="End Point" textFill="#970f0f">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="124.0" layoutY="14.0" text="Support" textFill="#0097ee">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Button fx:id="quitButton" layoutX="197.0" layoutY="52.0" mnemonicParsing="false" onAction="#quit" text="QUIT" textFill="#c30606" />
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Landmarks">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                          <Button fx:id="deleteLandmarkButton" layoutX="121.0" layoutY="418.0" mnemonicParsing="false" onAction="#deleteLandmark" prefHeight="26.0" prefWidth="68.0" text="Delete" />
+                                          <ComboBox fx:id="deleteLandmarkCombo" layoutX="21.0" layoutY="371.0" prefHeight="26.0" prefWidth="217.0" />
+                                          <Label layoutX="87.0" layoutY="321.0" prefHeight="27.0" prefWidth="136.0" text="Delete Landmark" textFill="#a80909">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                                          <Button fx:id="addLandmarkButton" layoutX="121.0" layoutY="220.0" mnemonicParsing="false" onAction="#addLandmarkToDatabase" prefHeight="26.0" prefWidth="68.0" text="Add" />
+                                            <TextField fx:id="landmarkCoordFieldY" alignment="CENTER" layoutX="155.0" layoutY="177.0" prefHeight="26.0" prefWidth="94.0" promptText="Y Coord" />
+                                            <TextField fx:id="landmarkCoordFieldX" alignment="CENTER" layoutX="28.0" layoutY="177.0" prefHeight="26.0" prefWidth="101.0" promptText="X Coord" />
+                                          <RadioButton fx:id="usePointerLandmark" layoutX="28.0" layoutY="141.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="158.0" text="Use Pointer Coordinates" />
+                                          <Label layoutX="101.0" layoutY="39.0" prefHeight="27.0" prefWidth="127.0" text="Add Landmark" textFill="#007c17">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                                          <TextField fx:id="landmarkNameField" alignment="CENTER" layoutX="78.0" layoutY="100.0" prefHeight="25.0" prefWidth="154.0" promptText="Landmark Name" />
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+                <ScrollPane layoutX="14.0" layoutY="14.0" prefHeight="742.0" prefWidth="900.0" />
+                <ImageView fx:id="mainImageView" fitHeight="742.0" fitWidth="900.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+                <Pane fx:id="imagePane" layoutX="14.0" layoutY="14.0" prefHeight="742.0" prefWidth="900.0" />
+                <Pane fx:id="labelPane" layoutX="14.0" layoutY="14.0" prefHeight="742.0" prefWidth="900.0" />
+                <Pane fx:id="landmarkPane" layoutX="14.0" layoutY="14.0" prefHeight="742.0" prefWidth="900.0" />
+            </children>
+        </AnchorPane>
+    </children>
+</VBox>

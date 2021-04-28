@@ -1,194 +1,376 @@
 package sample;
 
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
+import java.io.*;
+import java.util.*;
 
-import javafx.scene.control.RadioButton;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.*;
 import javafx.scene.image.*;
-import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
-public class Controller implements Initializable {
-
-    public Image blankMapImage;
-    public double xCoord, yCoord;
-    public double xCoordStart, yCoordStart, xCoordEnd, yCoordEnd;
-
-    @FXML
-    public ImageView originalImageView;
-    public ImageView blackWhiteImageView;
-    public Button chooseFileButton;
-    public Button blackWhiteButton;
-    public RadioButton startButton;
-    public RadioButton endButton;
-    public RadioButton landmarkButton;
-    public AnchorPane anchorPane1;
 
 
-    public void displayFile(ActionEvent actionEvent) {
-        Stage stage = new Stage();
-        blankMapImage = new Image("WaterfordMap.jpg", 700, 400, true, false);
-        originalImageView.setImage(blankMapImage);
+
+public class Controller {
+
+
+    public Boolean startPoint;
+    public int[] graphArray;
+    public GraphNodeAL start, dest;
+    public double xCoord, yCoord, xCoordStart, yCoordStart, xCoordEnd, yCoordEnd;
+    public ArrayList<Integer> breadthFirstSearchList;
+
+    public WritableImage blackAndWhiteImage;
+
+    public Button dijkstrasStart;
+    public ComboBox selectStartPointCombo;
+    public RadioButton usePointerStartButton;
+    public ComboBox selectEndPointCombo;
+    public RadioButton usePointerDestButton;
+    public RadioButton toggleLabelsButton;
+    public Button clearSelectionButton;
+    public ComboBox dijkstrasButton;
+    public Button bfsButton;
+    public TextField landmarkNameField;
+    public RadioButton usePointerLandmark;
+    public TextField landmarkCoordFieldX;
+    public TextField landmarkCoordFieldY;
+    public Button addLandmarkButton;
+    public Button deleteLandmarkButton;
+    public RadioButton easyRouteButton;
+    public RadioButton historicalRouteButton;
+    public Button displayCostButton;
+    public Button addCostButton;
+    public ImageView mainImageView;
+    public ComboBox selectDestCost;
+    public ComboBox deleteLandmarkCombo;
+    public Pane imagePane;
+    public Pane labelPane;
+    public Pane landmarkPane;
+
+    public ComboBox selectStartAddCost;
+    public TextField currentCost;
+    public TextField pathCostTextField;
+    public ComboBox searchModifier;
+
+    public RadioButton chooseStartButton;
+    public RadioButton chooseDestButton;
+
+
+    public void populateComboBox() {
+        selectEndPointCombo.getItems().clear();
+        selectStartPointCombo.getItems().clear();
+        selectDestCost.getItems().clear();
+        selectStartPointCombo.getSelectionModel().clearSelection();
+        deleteLandmarkCombo.getItems().clear();
+
+        selectStartAddCost.getItems().clear();
+
+        selectStartPointCombo.getItems().addAll(Utilities.graphlist);
+        selectEndPointCombo.getItems().addAll(Utilities.graphlist);
+        selectDestCost.getItems().addAll(Utilities.graphlist);
+        selectStartAddCost.getItems().addAll(Utilities.graphlist);
+        deleteLandmarkCombo.getItems().addAll(Utilities.graphlist);
+
     }
 
-    public WritableImage blackWhiteConversion(Image blankImage) {
+
+    public void colorPath(ArrayList<Integer> arrayList, int index) {
+        Paint paint;
+        if (index == 0)
+            paint = Color.RED;
+        else if (index == 1)
+            paint = Color.BLUE;
+        else
+            paint = Color.PURPLE;
+        for (int path : arrayList) {
+            double x = path % mainImageView.getImage().getWidth();
+            double y = path / mainImageView.getImage().getWidth() + 1;
+            Circle circle = new Circle();
+            circle.setLayoutX(x);
+            circle.setLayoutY(y);
+            circle.setRadius(1);
+            circle.setFill(paint);
+            imagePane.getChildren().add(circle);
+            arrayList = new ArrayList<>();
+        }
+    }
+
+
+
+
+//    public void getCost() {
+//
+//            GraphNodeAL<Landmark> start = (GraphNodeAL) selectStartAddCost.getSelectionModel().getSelectedItem();
+//            GraphNodeAL<Landmark> end = (GraphNodeAL) selectDestCost.getSelectionModel().getSelectedItem();
+//
+//            for (GraphLinkAL link : start.adjList) {
+//                if (link.startNode.equals(start) && link.destNode.equals(end)) {
+//                    currentCost.setText(String.valueOf(link.cost));
+//                }
+//            }
+//
+//    }
+
+    public void createLabels()  {
+        if (toggleLabelsButton.isSelected()) {
+            for (Object node : Utilities.graphlist) {
+                Label landmarkName = new Label();
+                landmarkName.setText(((Landmark) (((GraphNodeAL) node).data)).landmarkName);
+                landmarkName.setLayoutX(((Landmark) (((GraphNodeAL) node).data)).getX());
+                landmarkName.setLayoutY(((Landmark) (((GraphNodeAL) node).data)).getY());
+                labelPane.getChildren().add(landmarkName);
+            }
+        } else
+            labelPane.getChildren().clear();
+    }
+
+
+    public void displayLabels() {
+
+        toggleLabelsButton.setSelected(true);
+            createLabels();
+    }
+
+    public void deleteLandmark() {
+
+        GraphNodeAL gnToDelete = (GraphNodeAL) deleteLandmarkCombo.getSelectionModel().getSelectedItem();
+        Utilities.graphlist.remove(gnToDelete);
+
+        //updateLandmarks();
+        populateComboBox();
+        Utilities.save();
+    }
+
+
+
+    public WritableImage setBlackWhite(Image blankImage) {
+
         int width = (int) blankImage.getWidth();
         int height = (int) blankImage.getHeight();
-        PixelReader pr = blankImage.getPixelReader();
+        PixelReader pixelReader = blankImage.getPixelReader();
         WritableImage writableImage = new WritableImage(width, height);
-        PixelWriter pw = writableImage.getPixelWriter();
+        PixelWriter pixelWriter = writableImage.getPixelWriter();
 
         for (int c = 0; c < height; c++) {
             for (int r = 0; r < width; r++) {
-                Color color = pr.getColor(r, c);
 
+                Color color = pixelReader.getColor(r, c);
                 double red = color.getRed() * 255;
                 double green = color.getGreen() * 255;
                 double blue = color.getBlue() * 255;
 
-                if (red > 205 && blue > 160 && green > 225) {
-                    pw.setColor(r, c, Color.WHITE);
+                if (red > 205 && blue > 165 && green > 225) {
+                    pixelWriter.setColor(r, c, Color.WHITE);
                 } else {
-                    pw.setColor(r, c, Color.BLACK);
+                    pixelWriter.setColor(r, c, Color.BLACK);
                 }
             }
         }
         return writableImage;
     }
 
-    public void displayBlackWhiteImage(ActionEvent actionEvent) {
-        blackWhiteImageView.setImage(blackWhiteConversion(blankMapImage));
+
+    public void setDijkstrasBtn() {
+
+        ObservableList dijkstrasOptions = FXCollections.observableArrayList();
+        dijkstrasOptions.add("Classic");
+        dijkstrasOptions.add("Historical");
+        dijkstrasOptions.add("Easiest");
+        dijkstrasButton.getItems().addAll(dijkstrasOptions);
+
     }
 
-    public void markWaypoint() {
 
-        int selectStart;
-        int selectEnd;
-        int selectLandmark;
+    public void findRouteDijkstras() {
 
-        originalImageView.setOnMouseClicked(e -> {
-            if (startButton.isSelected()) {
+
+    }
+
+
+    public void setGraphArray() {
+        graphArray = createGraphArray(blackAndWhiteImage);
+    }
+
+    // this method selects the params for which to use with bfs and calls bfs
+    public void breadthFirstSearch() {
+
+        int width = (int) mainImageView.getFitWidth();
+
+            if (usePointerStartButton.isSelected()) {
+                start = new GraphNodeAL(xCoordStart, yCoordStart);
+                start.x = xCoordStart;
+                start.y = yCoordStart;
+            } else
+                start = (GraphNodeAL) selectStartPointCombo.getSelectionModel().getSelectedItem();
+            if (usePointerDestButton.isSelected()) {
+                dest = new GraphNodeAL(xCoordEnd, yCoordEnd);
+                dest.x = xCoordEnd;
+                dest.y = yCoordEnd;
+            } else
+                dest = (GraphNodeAL) selectEndPointCombo.getSelectionModel().getSelectedItem();
+            int[] graphArr = createGraphArray(blackAndWhiteImage);
+            breadthFirstSearchList = BreadthFirstSearch.breadthFirstSearch(start, dest, width, graphArr);
+            colorPath(breadthFirstSearchList, 0);
+
+    }
+
+
+    public int[] createGraphArray(WritableImage image) {
+
+        double width = image.getWidth();
+        double height = image.getHeight();
+
+        PixelReader pixelReader = image.getPixelReader();
+        int[] graphArr = new int[(int) width * (int) height];
+
+        for (int c = 0; c < height; c++) {
+            for (int r = 0; r < width; r++) {
+
+                int i = (c * (int) width + r);
+                Color color = pixelReader.getColor(r, c);
+                if (color.equals(Color.WHITE)) {
+                    graphArr[i] = 0;}
+                else {
+                    graphArr[i] = -1;
+                }
+            }
+        }
+        return graphArr;
+    }
+
+    public void drawPoints(double x, double y, int selection) {
+
+            if (selection == 1) {
+                Circle startPoint = new Circle();
+                startPoint.setLayoutX(x);
+                startPoint.setLayoutY(y);
+                startPoint.setRadius(4);
+                startPoint.setFill(Color.GREEN);
+                imagePane.getChildren().add(startPoint);
+            }
+
+            if (selection == 2) {
+                Circle endPoint = new Circle();
+                endPoint.setLayoutX(x);
+                endPoint.setLayoutY(y);
+                endPoint.setRadius(4);
+                endPoint.setFill(Color.RED);
+                imagePane.getChildren().add(endPoint);
+            }
+
+            if (selection == 3) {
+                Circle landmarkPoint = new Circle();
+                landmarkPoint.setLayoutX(x);
+                landmarkPoint.setLayoutY(y);
+                landmarkPoint.setRadius(4);
+                landmarkPoint.setFill(Color.PURPLE);
+                imagePane.getChildren().add(landmarkPoint);
+            }
+        }
+
+
+
+
+
+    public void selectWaypoint() {
+        int selectStart = 1;
+        int selectEnd = 2;
+        int selectLandmark = 3;
+
+        landmarkPane.setOnMouseClicked(e -> {
+            if (chooseStartButton.isSelected()) {
                 xCoordStart = e.getX();
                 yCoordStart = e.getY();
-                System.out.print(xCoordStart);
-                System.out.print(yCoordStart);
-
-                Circle startMarker = new Circle( e.getX(),e.getY(),3,Color.GREEN);
-                startMarker.setId("Start");
-                startButton.setSelected(false);
-
-                startMarker.setTranslateX(originalImageView.getLayoutX());
-                startMarker.setTranslateY(originalImageView.getLayoutY());
-                ((AnchorPane) originalImageView.getParent()).getChildren().add(startMarker);
-
-
-
-            }else if (endButton.isSelected()) {
+                drawPoints(xCoordStart, yCoordStart, selectStart);
+                chooseStartButton.setSelected(false);
+            } else if (chooseDestButton.isSelected()) {
                 xCoordEnd = e.getX();
                 yCoordEnd = e.getY();
-                System.out.print(xCoordEnd);
-                System.out.print(yCoordEnd);
-
-
-                Circle  endMarker = new Circle( e.getX(),e.getY(),3,Color.RED);
-                endMarker.setId("Destination");
-                endButton.setSelected(false);
-
-                endMarker.setTranslateX(originalImageView.getLayoutX());
-                endMarker.setTranslateY(originalImageView.getLayoutY());
-                ((AnchorPane) originalImageView.getParent()).getChildren().add(endMarker);
-
-            }
-            else if (landmarkButton.isSelected()) {
-                xCoordStart = e.getX();
-                yCoordStart = e.getY();
-                System.out.print(xCoordStart);
-                System.out.print(yCoordStart);
-
-
-                Circle  landMarker = new Circle( e.getX(),e.getY(),3,Color.BLUE);
-                landMarker.setId("Landmark");
-                landmarkButton.setSelected(false);
-
-                landMarker.setTranslateX(originalImageView.getLayoutX());
-                landMarker.setTranslateY(originalImageView.getLayoutY());
-                ((AnchorPane) originalImageView.getParent()).getChildren().add(landMarker);
+                drawPoints(xCoordEnd, yCoordEnd, selectEnd);
+                chooseDestButton.setSelected(false);
+            } else {
+                xCoord = e.getX();
+                yCoord = e.getY();
+                drawPoints(xCoord, yCoord, selectLandmark);
             }
         });
     }
 
-    public void setGraphArray(){
-        int[] graphArray;
-        graphArray = makeGraphArray(blackWhiteConversion(blankMapImage));
-    }
+    public void addLandmarkToDatabase() {
 
-    public int[] makeGraphArray(WritableImage image){
-
-        double width = image.getWidth(), height = image.getHeight();
-        PixelReader pr = image.getPixelReader();
-        PixelWriter pw = image.getPixelWriter();
-
-        int[] graphArray = new int[(int) (width * height)];
-
-        for(int c = 0; c < height; c++ ){
-            for(int r = 0; r < width; r++){
-
-                int current = (int) (c * width + r);
-                Color color = pr.getColor(c, r);
-                if(color == Color.WHITE){
-                    graphArray[current] = 0;
-                }else{
-                    graphArray[current] = -1;
-                }
+            double x, y;
+            if (usePointerLandmark.isSelected()) {
+                x = xCoord;
+                y = yCoord;
+            } else {
+                x = Double.parseDouble(landmarkCoordFieldX.getText());
+                y = Double.parseDouble(landmarkCoordFieldY.getText());
             }
-        }
-        return graphArray;
+            GraphNodeAL gn = new GraphNodeAL(new Landmark(x, y, landmarkNameField.getText()));
+            Utilities.graphlist.add(gn);
+            Utilities.save();
+           // updateLandmarks();
+            populateComboBox();
+            landmarkNameField.setPromptText("Landmark Name");
+            usePointerLandmark.setSelected(false);
+
     }
 
 
 
-    public void clearPoints(ActionEvent actionEvent) {
 
-        List<Circle> circleList = new ArrayList<>();
-        for (Node x : ((AnchorPane) originalImageView.getParent()).getChildren()) {
-            if (x instanceof Circle)
-                circleList.add((Circle) x);
-        }
-        ((Pane) originalImageView.getParent()).getChildren().removeAll(circleList);
+    public void clearBoxes(){
+
+        imagePane.getChildren().clear();
+        landmarkPane.getChildren().clear();
+        selectStartPointCombo.getItems().clear();
+        selectEndPointCombo.getItems().clear();
+        deleteLandmarkCombo.getItems().clear();
+        selectStartAddCost.getItems().clear();
+        selectDestCost.getItems().clear();
+
     }
 
-    /**
-     * Method exits the program.
-     */
-    public void quit(ActionEvent actionEvent) {
+
+    public void setClearSelection() {
+        imagePane.getChildren().clear();
+        Utilities.waypoints.clear();
+        Utilities.avoids.clear();
+        //updateLandmarks();
+        populateComboBox();
+
+    }
+
+    public void quit(){
         Platform.exit();
     }
 
-    public void saveGraph() throws Exception {
-        Utilities.save();
-    }
+    public void initialize()  {
 
-    public void loadGraph() throws Exception {
-        Utilities.load();
-    }
+        Utilities.createLandmarkList();
+        File file = new File("resource\\WaterfordMap.jpg");
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+        Image im = new Image(String.valueOf(file.toURI()), 900, 742, false, false);
+        blackAndWhiteImage = setBlackWhite(im);
+        mainImageView.setImage(im);
+        selectWaypoint();
+        Utilities.createGraphList();
+        try {
+            Utilities.load();
+        } catch (Exception e) {
+            System.out.println("Load Failed");
+        }
+        //updateLandmarks();
+        setGraphArray();
+        displayLabels();
+        startPoint = true;
+        setDijkstrasBtn();
+        createLabels();
     }
-
 }
-
-
