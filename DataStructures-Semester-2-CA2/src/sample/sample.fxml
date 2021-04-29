@@ -128,10 +128,31 @@
                                  </font>
                               </Label>
                                           <TextField fx:id="landmarkNameField" alignment="CENTER" layoutX="78.0" layoutY="100.0" prefHeight="25.0" prefWidth="154.0" promptText="Landmark Name" />
+                              <ComboBox fx:id="waypointCombo" layoutX="26.0" layoutY="525.0" prefWidth="150.0" />
+                              <ComboBox fx:id="avoidCombo" layoutX="26.0" layoutY="631.0" prefWidth="150.0" />
+                              <Button fx:id="addWaypointButton" layoutX="212.0" layoutY="525.0" mnemonicParsing="false" onAction="#addWaypoint" text="add Waypoint" />
+                              <Button fx:id="addAvoidButton" layoutX="212.0" layoutY="631.0" mnemonicParsing="false" onAction="#addAvoid" text="add Avoidpoint" />
+                              <TextArea fx:id="waypointTextArea" layoutX="29.0" layoutY="566.0" prefHeight="43.0" prefWidth="276.0" />
+                              <TextArea fx:id="avoidTextArea" layoutX="29.0" layoutY="667.0" prefHeight="50.0" prefWidth="278.0" />
                                     </children>
                                 </AnchorPane>
                             </content>
                         </Tab>
+                  <Tab text="Options">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <ComboBox fx:id="selectStartAddCost" layoutX="22.0" layoutY="55.0" prefWidth="150.0" />
+                              <ComboBox fx:id="selectDestCost" layoutX="22.0" layoutY="171.0" prefWidth="150.0" />
+                              <RadioButton fx:id="easyCostButton" layoutX="37.0" layoutY="273.0" mnemonicParsing="false" text="Easy" />
+                              <RadioButton fx:id="historicalCostButton" layoutX="201.0" layoutY="273.0" mnemonicParsing="false" text="Historical" />
+                              <Button fx:id="addCostButton" layoutX="132.0" layoutY="359.0" mnemonicParsing="false" onAction="#addCostToLandmarkRoute" text="Add Cost" />
+                              <TextField fx:id="pathCostTextField" layoutX="127.0" layoutY="313.0" prefHeight="25.0" prefWidth="74.0" />
+                              <Label layoutX="68.0" layoutY="317.0" text="Cost" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
                     </tabs>
                 </TabPane>
                 <ScrollPane layoutX="14.0" layoutY="14.0" prefHeight="742.0" prefWidth="900.0" />

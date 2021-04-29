@@ -1,5 +1,6 @@
 package sample;
 
+import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.*;
 
@@ -55,24 +56,39 @@ public class Controller {
     public Pane landmarkPane;
 
     public ComboBox selectStartAddCost;
-    public TextField currentCost;
     public TextField pathCostTextField;
     public ComboBox searchModifier;
 
     public RadioButton chooseStartButton;
     public RadioButton chooseDestButton;
     public TextArea distanceTextArea;
+    public ComboBox waypointCombo;
+    public ComboBox avoidCombo;
+    public Button addWaypointButton;
+    public Button addAvoidButton;
+    public TextArea waypointTextArea;
+    public TextArea avoidTextArea;
+    public RadioButton easyCostButton;
+    public RadioButton historicalCostButton;
 
 
     public void populateComboBox() {
         selectEndPointCombo.getItems().clear();
         selectStartPointCombo.getItems().clear();
-        // selectDestCost.getItems().clear();
+        selectDestCost.getItems().clear();
         selectStartPointCombo.getSelectionModel().clearSelection();
         deleteLandmarkCombo.getItems().clear();
+        waypointCombo.getItems().clear();
+        avoidCombo.getItems().clear();
+        selectStartAddCost.getItems().clear();
+        selectStartAddCost.getItems().clear();
+        selectDestCost.getItems().clear();
 
-        // selectStartAddCost.getItems().clear();
 
+        selectDestCost.getItems().addAll(Utilities.graphlist);
+        selectStartAddCost.getItems().addAll(Utilities.graphlist);
+        waypointCombo.getItems().addAll(Utilities.graphlist);
+        avoidCombo.getItems().addAll(Utilities.graphlist);
         selectStartPointCombo.getItems().addAll(Utilities.graphlist);
         selectEndPointCombo.getItems().addAll(Utilities.graphlist);
         // selectDestCost.getItems().addAll(Utilities.graphlist);
@@ -82,14 +98,18 @@ public class Controller {
     }
 
 
+
+
+
+
     public void colorPath(ArrayList<Integer> arrayList, int index) {
         Paint paint;
         if (index == 0) {
             paint = Color.RED;
         } else if (index == 1) {
-            paint = Color.BLUE;
+            paint = Color.GREEN;
         } else {
-            paint = Color.PURPLE;
+            paint = Color.THISTLE;
         }
         for (int path : arrayList) {
 
@@ -117,9 +137,57 @@ public class Controller {
                 landmarkName.setLayoutY(((Landmark) (((GraphNodeAL) node).data)).getY());
                 labelPane.getChildren().add(landmarkName);
             }
+            updateLandmark();
         } else {
             labelPane.getChildren().clear();
+            landmarkPane.getChildren().clear();
         }
+    }
+
+
+    public void addCostToLandmarkRoute() {
+
+        Boolean hist = false;
+        Boolean easy = false;
+
+        GraphNodeAL<Landmark> start = (GraphNodeAL<Landmark>) selectStartAddCost.getSelectionModel().getSelectedItem();
+        GraphNodeAL<Landmark> dest = (GraphNodeAL<Landmark>) selectDestCost.getSelectionModel().getSelectedItem();
+
+        if (easyCostButton.isSelected()) {
+            easy = true;
+            System.out.print("Easy selected");
+        }
+
+        if (historicalCostButton.isSelected()) {
+            hist = true;
+            System.out.print("Historical Selected");
+        }
+
+        start.connectToNodeUndirected(start, dest, Integer.parseInt(pathCostTextField.getText()), hist, easy);
+        getCost();
+        Utilities.save();
+    }
+
+
+    public void getCost() {
+
+        try {
+
+            GraphNodeAL<Landmark> start = (GraphNodeAL<Landmark>) selectStartAddCost.getSelectionModel().getSelectedItem();
+            GraphNodeAL<Landmark> dest = (GraphNodeAL<Landmark>) selectDestCost.getSelectionModel().getSelectedItem();
+
+            for (GraphLinkAL gl : start.adjList) {
+                if (gl.startNode.equals(start) && gl.destNode.equals(dest))
+                    pathCostTextField.setText(String.valueOf(gl.cost));
+
+                else
+                    pathCostTextField.setText("No Current Cost");
+            }
+
+        } catch (Exception e) {
+            System.out.print("No Cost Available");
+        }
+
     }
 
 
@@ -130,6 +198,21 @@ public class Controller {
         });
     }
 
+
+    public void addWaypoint() {
+
+        GraphNodeAL waypoint = (GraphNodeAL) waypointCombo.getSelectionModel().getSelectedItem();
+        Utilities.waypoints.add(waypoint);
+        waypointTextArea.setText(Utilities.waypoints.toString());
+
+    }
+
+    public void addAvoid() {
+
+        GraphNodeAL avoidPoint = (GraphNodeAL) avoidCombo.getSelectionModel().getSelectedItem();
+        Utilities.avoids.add(avoidPoint);
+        avoidTextArea.setText(Utilities.avoids.toString());
+    }
 
     public void deleteLandmark() {
 
@@ -181,7 +264,17 @@ public class Controller {
 
     public void findRouteDijkstras() {
 
-
+//        int width = (int) mainImageView.getFitWidth();
+//        ArrayList<Integer> dijkstraSearchList = new ArrayList<>();
+//
+//        CostedPath costedPath = null;
+//
+//        GraphNodeAL startPoint = (GraphNodeAL) selectStartPointCombo.getSelectionModel().getSelectedItem();
+//        GraphNodeAL endPoint = (GraphNodeAL) selectEndPointCombo.getSelectionModel().getSelectedItem();
+//        String mod = (String) dijkstrasButton.getSelectionModel().getSelectedItem();
+//
+//        Dijkstra.findCheapestPathDijkstra( startPoint, endPoint , mod).getPathList();
+//        colorPath(, 2);
     }
 
 
@@ -314,6 +407,10 @@ public class Controller {
 
     public void updateLandmark() {
 
+        selectEndPointCombo.getItems().clear();
+        selectStartPointCombo.getItems().clear();
+        deleteLandmarkCombo.getItems().clear();
+
         List<Label> labelList = new ArrayList<>();
         imagePane.getChildren().clear();
         landmarkPane.getChildren().clear();
@@ -400,5 +497,6 @@ public class Controller {
         setDijkstrasBtn();
         createLabels();
         displayLabels();
+        populateComboBox();
     }
 }
