@@ -11,6 +11,7 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -80,7 +81,7 @@
                                           <RadioButton fx:id="chooseStartButton" layoutX="75.0" layoutY="327.0" mnemonicParsing="false" text="Select As Start" />
                                           <ComboBox fx:id="selectStartPointCombo" layoutX="51.0" layoutY="358.0" prefHeight="26.0" prefWidth="194.0" promptText="Select Starting Location" />
                                           <Button fx:id="clearSelectionButton" layoutX="18.0" layoutY="52.0" mnemonicParsing="false" onAction="#setClearSelection" text="Clear Selection" />
-                                          <RadioButton fx:id="toggleLabelsButton" layoutX="114.0" layoutY="637.0" mnemonicParsing="false" text="Toggle Labels" />
+                                          <RadioButton fx:id="toggleLabelsButton" layoutX="208.0" layoutY="19.0" mnemonicParsing="false" onAction="#displayLabels" text="Toggle Labels" />
                                           <RadioButton fx:id="chooseDestButton" layoutX="71.0" layoutY="489.0" mnemonicParsing="false" text="Select As Destination" />
                                           <RadioButton fx:id="usePointerDestButton" layoutX="65.0" layoutY="461.0" mnemonicParsing="false" text="Use Pointer For Destination" />
                                           <ComboBox fx:id="selectEndPointCombo" layoutX="50.0" layoutY="518.0" prefHeight="26.0" prefWidth="196.0" promptText="Select Destination" />
@@ -100,6 +101,8 @@
                                  </font>
                               </Label>
                               <Button fx:id="quitButton" layoutX="197.0" layoutY="52.0" mnemonicParsing="false" onAction="#quit" text="QUIT" textFill="#c30606" />
+                              <TextArea fx:id="distanceTextArea" layoutX="50.0" layoutY="630.0" prefHeight="37.0" prefWidth="158.0" />
+                              <Label layoutX="52.0" layoutY="597.0" text="Distance" />
                                     </children>
                                 </AnchorPane>
                             </content>

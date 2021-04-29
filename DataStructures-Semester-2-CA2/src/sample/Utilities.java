@@ -25,11 +25,12 @@ public class Utilities {
 
     public static void save() {
         try {
-            FileOutputStream fileOut = new FileOutputStream("resource\\graphlist.txt");
+            FileOutputStream fileOut = new FileOutputStream("graphlist.txt");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(graphlist);
             out.close();
-            fileOut.close();
+            System.out.println("The Object  was succesfully written to a file");
+//            fileOut.close();
         } catch( Exception e) {
             e.printStackTrace();
         }
@@ -37,7 +38,7 @@ public class Utilities {
 
     public static void load() {
         try {
-            FileInputStream fileIn = new FileInputStream("resource\\graphlist.txt");
+            FileInputStream fileIn = new FileInputStream("graphlist.txt");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             graphlist.addAll((ArrayList)in.readObject());
             fileIn.close();

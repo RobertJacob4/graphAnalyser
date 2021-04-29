@@ -1,13 +1,18 @@
 package sample;
 
+import javafx.scene.control.TextArea;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+
+
 public class BreadthFirstSearch {
 
 
-    public static ArrayList<Integer> breadthFirstSearch(GraphNodeAL startNode, GraphNodeAL destNode, int width, int[] graphArray) {
+    public static ArrayList<Integer> breadthFirstSearch(GraphNodeAL startNode, GraphNodeAL destNode, int width, int[] graphArray, TextArea distanceBox) {
         ArrayList<Integer> agenda = new ArrayList<>();
 
         int destIndex = (int) ((destNode.y - 1) * width + destNode.x);
@@ -47,6 +52,9 @@ public class BreadthFirstSearch {
                     } while (cn != startIndex);
 
                     System.out.println(totalDistance);
+                    int realDistance = 0;
+                    realDistance = (totalDistance * 5);
+                    distanceBox.setText("Meters: " + realDistance);
                     return newPath;
                 }
             } else {
@@ -102,5 +110,8 @@ public class BreadthFirstSearch {
             }
         return findPathBreadthFirst(agenda, encountered, lookingfor); //Tail call
     }
+
+
+
 
 }
