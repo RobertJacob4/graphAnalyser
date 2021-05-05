@@ -1,6 +1,5 @@
 package sample;
 
-import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.*;
 
@@ -98,10 +97,6 @@ public class Controller {
     }
 
 
-
-
-
-
     public void colorPath(ArrayList<Integer> arrayList, int index) {
         Paint paint;
         if (index == 0) {
@@ -109,7 +104,7 @@ public class Controller {
         } else if (index == 1) {
             paint = Color.GREEN;
         } else {
-            paint = Color.THISTLE;
+            paint = Color.BLUE;
         }
         for (int path : arrayList) {
 
@@ -187,7 +182,6 @@ public class Controller {
         } catch (Exception e) {
             System.out.print("No Cost Available");
         }
-
     }
 
 
@@ -264,17 +258,51 @@ public class Controller {
 
     public void findRouteDijkstras() {
 
-//        int width = (int) mainImageView.getFitWidth();
-//        ArrayList<Integer> dijkstraSearchList = new ArrayList<>();
-//
-//        CostedPath costedPath = null;
-//
-//        GraphNodeAL startPoint = (GraphNodeAL) selectStartPointCombo.getSelectionModel().getSelectedItem();
-//        GraphNodeAL endPoint = (GraphNodeAL) selectEndPointCombo.getSelectionModel().getSelectedItem();
-//        String mod = (String) dijkstrasButton.getSelectionModel().getSelectedItem();
-//
-//        Dijkstra.findCheapestPathDijkstra( startPoint, endPoint , mod).getPathList();
-//        colorPath(, 2);
+        CostedPath costedPath = new CostedPath();
+        ArrayList<Integer> dijkstraList = new ArrayList<>();
+        CostedPath tempCpa;
+
+
+        GraphNodeAL startPoint = (GraphNodeAL) selectStartPointCombo.getSelectionModel().getSelectedItem();
+        GraphNodeAL endPoint = (GraphNodeAL) selectEndPointCombo.getSelectionModel().getSelectedItem();
+
+        Utilities.waypoints.add(0, startPoint);
+
+        Utilities.waypoints.add(endPoint);
+
+        String mod;
+
+        if (dijkstrasButton.getSelectionModel().getSelectedItem().equals("Easiest")) {
+            mod = "Easiest";
+        } else if (dijkstrasButton.getSelectionModel().getSelectedItem().equals("Historical")) {
+            mod = "Historical";
+        } else
+            mod = "Classic";
+
+        System.out.println(mod);
+        for (int i = 0; i < Utilities.waypoints.size() - 1; i++) {
+            tempCpa = Dijkstra.findCheapestPathDijkstra2(Utilities.waypoints.get(i), Utilities.waypoints.get(i + 1).data, Utilities.avoids, mod);
+            costedPath.pathCost += tempCpa.getPathCost();
+            for (int j = 0; j < tempCpa.pathList.size(); j++) {
+                System.out.println(tempCpa.getPathList().toString());
+                costedPath.pathList.add(tempCpa.getPathList().get(j));
+            }
+            System.out.println(costedPath.getPathList().toString());
+
+        }
+        for (int i = 0; i < costedPath.pathList.size() - 1; i++) {
+            int[] arr = createGraphArray(blackAndWhiteImage);
+            if (!(costedPath.pathList.get(i).equals(costedPath.pathList.get(i + 1))))
+                dijkstraList.addAll(BreadthFirstSearch.breadthFirstSearch(costedPath.pathList.get(i), costedPath.pathList.get(i + 1), (int) mainImageView.getImage().getWidth(), arr, distanceTextArea));
+        }
+
+        colorPath(dijkstraList, 2);
+        System.out.println(Utilities.avoids.toString());
+        System.out.println(Utilities.waypoints.toString());
+        Utilities.waypoints.clear();
+        Utilities.avoids.clear();
+        Utilities.save();
+
     }
 
 
@@ -444,8 +472,6 @@ public class Controller {
 
 
         }
-
-
     }
 
 
@@ -464,10 +490,10 @@ public class Controller {
 
     public void setClearSelection() {
         imagePane.getChildren().clear();
-        Utilities.waypoints.clear();
-        Utilities.avoids.clear();
         updateLandmark();
         populateComboBox();
+        Utilities.waypoints.clear();
+        Utilities.avoids.clear();
 
     }
 
