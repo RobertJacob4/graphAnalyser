@@ -69,6 +69,7 @@ public class Controller {
     public TextArea avoidTextArea;
     public RadioButton easyCostButton;
     public RadioButton historicalCostButton;
+    public TextArea currentPathCostBox;
 
 
     public void populateComboBox() {
@@ -161,6 +162,35 @@ public class Controller {
         start.connectToNodeUndirected(start, dest, Integer.parseInt(pathCostTextField.getText()), hist, easy);
         getCost();
         Utilities.save();
+
+        printCosts();
+
+
+//            if (historicalCostButton.isSelected()) {
+//                currentPathCostBox.appendText(start.getData().landmarkName + " >>>>>>> " + dest.getData().landmarkName + "   Cost : " + pathCostTextField.getText() + "   Type : Historical " + "\n");
+//            }
+//
+//            if (easyCostButton.isSelected()) {
+//                currentPathCostBox.appendText(start.getData().landmarkName + " >>>>>>> " + dest.getData().landmarkName + "   Cost : " + pathCostTextField.getText() + "   Type : Easy " + "\n");
+//            }
+
+    }
+
+    public void printCosts() {
+        currentPathCostBox.clear();
+        for (GraphNodeAL node : Utilities.graphlist) {
+            GraphNodeAL<Landmark> start = node;
+
+            for (GraphLinkAL gl : start.adjList) {
+                String dest = gl.destNode.toString();
+                if (gl.easiest) {
+                    currentPathCostBox.appendText("\n" + start.data.landmarkName + " >>> " + dest.substring(dest.lastIndexOf("landmarkName=") + 13).replaceAll("[^A-Za-z]+", "") + "   Cost : " + gl.cost + "   Type : Easiest");
+                }
+                if (gl.historical) {
+                    currentPathCostBox.appendText("\n" + start.data.landmarkName + " >>> " + dest.substring(dest.lastIndexOf("landmarkName=") + 13).replaceAll("[^A-Za-z]+", "") + "   Cost : " + gl.cost + "   Type : Historical");
+                }
+            }
+        }
     }
 
 
@@ -195,14 +225,15 @@ public class Controller {
 
     public void addWaypoint() {
 
+        waypointTextArea.clear();
         GraphNodeAL waypoint = (GraphNodeAL) waypointCombo.getSelectionModel().getSelectedItem();
         Utilities.waypoints.add(waypoint);
         waypointTextArea.setText(Utilities.waypoints.toString());
-
     }
 
     public void addAvoid() {
 
+        avoidTextArea.clear();
         GraphNodeAL avoidPoint = (GraphNodeAL) avoidCombo.getSelectionModel().getSelectedItem();
         Utilities.avoids.add(avoidPoint);
         avoidTextArea.setText(Utilities.avoids.toString());
@@ -427,6 +458,7 @@ public class Controller {
         Utilities.save();
         updateLandmark();
         populateComboBox();
+        printCosts();
         landmarkNameField.setPromptText("Landmark Name");
         usePointerLandmark.setSelected(false);
 
@@ -494,6 +526,7 @@ public class Controller {
         populateComboBox();
         Utilities.waypoints.clear();
         Utilities.avoids.clear();
+        printCosts();
 
     }
 
@@ -524,5 +557,6 @@ public class Controller {
         createLabels();
         displayLabels();
         populateComboBox();
+        printCosts();
     }
 }

@@ -73,4 +73,5 @@ public class GraphNodeAL<T> implements Serializable {
     public String toString() {
         return data.toString();
     }
+
 }

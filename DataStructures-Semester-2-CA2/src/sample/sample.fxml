@@ -149,6 +149,7 @@
                               <Button fx:id="addCostButton" layoutX="132.0" layoutY="359.0" mnemonicParsing="false" onAction="#addCostToLandmarkRoute" text="Add Cost" />
                               <TextField fx:id="pathCostTextField" layoutX="127.0" layoutY="313.0" prefHeight="25.0" prefWidth="74.0" />
                               <Label layoutX="68.0" layoutY="317.0" text="Cost" />
+                              <TextArea fx:id="currentPathCostBox" layoutX="2.0" layoutY="424.0" prefHeight="200.0" prefWidth="328.0" />
                            </children>
                         </AnchorPane>
                     </content>

@@ -23,4 +23,14 @@ public class GraphLinkAL implements Serializable {
         this.easiest = easy;
     }
 
+    @Override
+    public String toString() {
+        return "GraphLinkAL{" +
+                "startNode=" + startNode +
+                ", destNode=" + destNode +
+                ", cost=" + cost +
+                ", easiest=" + easiest +
+                ", historical=" + historical +
+                '}';
+    }
 }
