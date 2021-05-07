@@ -70,6 +70,10 @@ public class Controller {
     public RadioButton easyCostButton;
     public RadioButton historicalCostButton;
     public TextArea currentPathCostBox;
+    public ComboBox histCombo;
+    public Button addHistButton;
+    public Button deleteHistButton;
+    public TextArea histTextArea;
 
 
     public void populateComboBox() {
@@ -83,6 +87,8 @@ public class Controller {
         selectStartAddCost.getItems().clear();
         selectStartAddCost.getItems().clear();
         selectDestCost.getItems().clear();
+        histCombo.getItems().clear();
+        histTextArea.clear();
 
 
         selectDestCost.getItems().addAll(Utilities.graphlist);
@@ -94,6 +100,9 @@ public class Controller {
         // selectDestCost.getItems().addAll(Utilities.graphlist);
         // selectStartAddCost.getItems().addAll(Utilities.graphlist);
         deleteLandmarkCombo.getItems().addAll(Utilities.graphlist);
+        histCombo.getItems().addAll(Utilities.graphlist);
+        histTextArea.setText(Utilities.historicalPoints.toString());
+
 
     }
 
@@ -239,6 +248,7 @@ public class Controller {
         avoidTextArea.setText(Utilities.avoids.toString());
     }
 
+
     public void deleteLandmark() {
 
         GraphNodeAL gnToDelete = (GraphNodeAL) deleteLandmarkCombo.getSelectionModel().getSelectedItem();
@@ -247,6 +257,20 @@ public class Controller {
         populateComboBox();
         Utilities.save();
     }
+
+    public  void addHist(){
+        histTextArea.clear();
+        GraphNodeAL histPoint = (GraphNodeAL) histCombo.getSelectionModel().getSelectedItem();
+        Utilities.historicalPoints.add(histPoint);
+        histTextArea.setText(Utilities.historicalPoints.toString());
+    }
+    public  void deleteHist(){
+        histTextArea.clear();
+        GraphNodeAL histPointDelete = (GraphNodeAL) histCombo.getSelectionModel().getSelectedItem();
+        Utilities.historicalPoints.remove(histPointDelete);
+        histTextArea.setText(Utilities.historicalPoints.toString());
+    }
+
 
 
     public WritableImage setBlackWhite(Image blankImage) {
@@ -288,6 +312,7 @@ public class Controller {
 
 
     public void findRouteDijkstras() {
+        ArrayList<GraphNodeAL> points ;
 
         CostedPath costedPath = new CostedPath();
         ArrayList<Integer> dijkstraList = new ArrayList<>();
@@ -297,41 +322,45 @@ public class Controller {
         GraphNodeAL startPoint = (GraphNodeAL) selectStartPointCombo.getSelectionModel().getSelectedItem();
         GraphNodeAL endPoint = (GraphNodeAL) selectEndPointCombo.getSelectionModel().getSelectedItem();
 
-        Utilities.waypoints.add(0, startPoint);
 
-        Utilities.waypoints.add(endPoint);
 
-        String mod;
+        String mod = dijkstrasButton.getSelectionModel().getSelectedItem().toString();
 
-        if (dijkstrasButton.getSelectionModel().getSelectedItem().equals("Easiest")) {
-            mod = "Easiest";
-        } else if (dijkstrasButton.getSelectionModel().getSelectedItem().equals("Historical")) {
-            mod = "Historical";
-        } else
-            mod = "Classic";
+        if(mod == "Historical") {
+            points = Utilities.historicalPoints;
+        }
+        else  points = Utilities.waypoints;
 
-        System.out.println(mod);
-        for (int i = 0; i < Utilities.waypoints.size() - 1; i++) {
-            tempCpa = Dijkstra.findCheapestPathDijkstra2(Utilities.waypoints.get(i), Utilities.waypoints.get(i + 1).data, Utilities.avoids, mod);
-            costedPath.pathCost += tempCpa.getPathCost();
-            for (int j = 0; j < tempCpa.pathList.size(); j++) {
-                System.out.println(tempCpa.getPathList().toString());
-                costedPath.pathList.add(tempCpa.getPathList().get(j));
+        points.add(0, startPoint);
+
+        points.add(endPoint);
+
+
+
+            for (int i = 0; i < points.size() - 1; i++) {
+                tempCpa = Dijkstra.findCheapestPathDijkstra2(points.get(i), points.get(i + 1).data, Utilities.avoids, mod);
+                costedPath.pathCost += tempCpa.getPathCost();
+                for (int j = 0; j < tempCpa.pathList.size(); j++) {
+                    System.out.println(tempCpa.getPathList().toString());
+                    costedPath.pathList.add(tempCpa.getPathList().get(j));
+                }
+                System.out.println(costedPath.getPathList().toString());
+
             }
-            System.out.println(costedPath.getPathList().toString());
+            for (int i = 0; i < costedPath.pathList.size() - 1; i++) {
+                int[] arr = createGraphArray(blackAndWhiteImage);
+                if (!(costedPath.pathList.get(i).equals(costedPath.pathList.get(i + 1))))
+                    dijkstraList.addAll(BreadthFirstSearch.breadthFirstSearch(costedPath.pathList.get(i), costedPath.pathList.get(i + 1), (int) mainImageView.getImage().getWidth(), arr, distanceTextArea));
+            }
 
-        }
-        for (int i = 0; i < costedPath.pathList.size() - 1; i++) {
-            int[] arr = createGraphArray(blackAndWhiteImage);
-            if (!(costedPath.pathList.get(i).equals(costedPath.pathList.get(i + 1))))
-                dijkstraList.addAll(BreadthFirstSearch.breadthFirstSearch(costedPath.pathList.get(i), costedPath.pathList.get(i + 1), (int) mainImageView.getImage().getWidth(), arr, distanceTextArea));
-        }
 
         colorPath(dijkstraList, 2);
         System.out.println(Utilities.avoids.toString());
-        System.out.println(Utilities.waypoints.toString());
+        System.out.println(points.toString());
         Utilities.waypoints.clear();
         Utilities.avoids.clear();
+        Utilities.historicalPoints.remove(startPoint);
+        Utilities.historicalPoints.remove(endPoint);
         Utilities.save();
 
     }

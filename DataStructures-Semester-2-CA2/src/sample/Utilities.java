@@ -10,6 +10,7 @@ public class Utilities {
     public static ObservableList<Landmark> landmarks;
     public static ArrayList<GraphNodeAL> graphlist;
     public static ArrayList<GraphNodeAL> waypoints;
+    public static ArrayList<GraphNodeAL> historicalPoints;
     public static ArrayList<GraphNodeAL> avoids;
 
     public static void createLandmarkList() {
@@ -21,6 +22,7 @@ public class Utilities {
         graphlist = new ArrayList<>();
         waypoints = new ArrayList<>();
         avoids = new ArrayList<>();
+        historicalPoints= new ArrayList<>();
     }
 
     public static void save() {

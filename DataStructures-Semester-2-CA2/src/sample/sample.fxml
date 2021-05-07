@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="800.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<VBox prefHeight="800.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -111,29 +111,33 @@
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
-                                          <Button fx:id="deleteLandmarkButton" layoutX="121.0" layoutY="418.0" mnemonicParsing="false" onAction="#deleteLandmark" prefHeight="26.0" prefWidth="68.0" text="Delete" />
-                                          <ComboBox fx:id="deleteLandmarkCombo" layoutX="21.0" layoutY="371.0" prefHeight="26.0" prefWidth="217.0" />
-                                          <Label layoutX="87.0" layoutY="321.0" prefHeight="27.0" prefWidth="136.0" text="Delete Landmark" textFill="#a80909">
+                                          <Button fx:id="deleteLandmarkButton" layoutX="121.0" layoutY="305.0" mnemonicParsing="false" onAction="#deleteLandmark" prefHeight="26.0" prefWidth="68.0" text="Delete" />
+                                          <ComboBox fx:id="deleteLandmarkCombo" layoutX="30.0" layoutY="266.0" prefHeight="26.0" prefWidth="217.0" />
+                                          <Label layoutX="88.0" layoutY="228.0" prefHeight="27.0" prefWidth="136.0" text="Delete Landmark" textFill="#a80909">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                                          <Button fx:id="addLandmarkButton" layoutX="121.0" layoutY="220.0" mnemonicParsing="false" onAction="#addLandmarkToDatabase" prefHeight="26.0" prefWidth="68.0" text="Add" />
-                                            <TextField fx:id="landmarkCoordFieldY" alignment="CENTER" layoutX="155.0" layoutY="177.0" prefHeight="26.0" prefWidth="94.0" promptText="Y Coord" />
-                                            <TextField fx:id="landmarkCoordFieldX" alignment="CENTER" layoutX="28.0" layoutY="177.0" prefHeight="26.0" prefWidth="101.0" promptText="X Coord" />
-                                          <RadioButton fx:id="usePointerLandmark" layoutX="28.0" layoutY="141.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="158.0" text="Use Pointer Coordinates" />
-                                          <Label layoutX="101.0" layoutY="39.0" prefHeight="27.0" prefWidth="127.0" text="Add Landmark" textFill="#007c17">
+                                          <Button fx:id="addLandmarkButton" layoutX="121.0" layoutY="173.0" mnemonicParsing="false" onAction="#addLandmarkToDatabase" prefHeight="26.0" prefWidth="68.0" text="Add" />
+                                            <TextField fx:id="landmarkCoordFieldY" alignment="CENTER" layoutX="165.0" layoutY="131.0" prefHeight="26.0" prefWidth="94.0" promptText="Y Coord" />
+                                            <TextField fx:id="landmarkCoordFieldX" alignment="CENTER" layoutX="37.0" layoutY="131.0" prefHeight="26.0" prefWidth="101.0" promptText="X Coord" />
+                                          <RadioButton fx:id="usePointerLandmark" layoutX="29.0" layoutY="94.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="158.0" text="Use Pointer Coordinates" />
+                                          <Label layoutX="92.0" layoutY="21.0" prefHeight="27.0" prefWidth="127.0" text="Add Landmark" textFill="#007c17">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                                          <TextField fx:id="landmarkNameField" alignment="CENTER" layoutX="78.0" layoutY="100.0" prefHeight="25.0" prefWidth="154.0" promptText="Landmark Name" />
-                              <ComboBox fx:id="waypointCombo" layoutX="26.0" layoutY="525.0" prefWidth="150.0" />
-                              <ComboBox fx:id="avoidCombo" layoutX="26.0" layoutY="631.0" prefWidth="150.0" />
-                              <Button fx:id="addWaypointButton" layoutX="212.0" layoutY="525.0" mnemonicParsing="false" onAction="#addWaypoint" text="add Waypoint" />
-                              <Button fx:id="addAvoidButton" layoutX="212.0" layoutY="631.0" mnemonicParsing="false" onAction="#addAvoid" text="add Avoidpoint" />
-                              <TextArea fx:id="waypointTextArea" layoutX="29.0" layoutY="566.0" prefHeight="43.0" prefWidth="276.0" />
-                              <TextArea fx:id="avoidTextArea" layoutX="29.0" layoutY="667.0" prefHeight="50.0" prefWidth="278.0" />
+                                          <TextField fx:id="landmarkNameField" alignment="CENTER" layoutX="79.0" layoutY="58.0" prefHeight="25.0" prefWidth="154.0" promptText="Landmark Name" />
+                              <ComboBox fx:id="waypointCombo" layoutX="13.0" layoutY="359.0" prefWidth="150.0" />
+                              <ComboBox fx:id="avoidCombo" layoutX="13.0" layoutY="456.0" prefWidth="150.0" />
+                              <Button fx:id="addWaypointButton" layoutX="198.0" layoutY="359.0" mnemonicParsing="false" onAction="#addWaypoint" text="add Waypoint" />
+                              <Button fx:id="addAvoidButton" layoutX="184.0" layoutY="456.0" mnemonicParsing="false" onAction="#addAvoid" text="add Avoidpoint" />
+                              <TextArea fx:id="waypointTextArea" layoutX="13.0" layoutY="392.0" prefHeight="56.0" prefWidth="276.0" />
+                              <TextArea fx:id="avoidTextArea" layoutX="12.0" layoutY="490.0" prefHeight="62.0" prefWidth="278.0" />
+                              <ComboBox fx:id="histCombo" layoutX="13.0" layoutY="565.0" prefWidth="150.0" />
+                              <Button fx:id="addHistButton" layoutX="181.0" layoutY="565.0" mnemonicParsing="false" onAction="#addHist" prefHeight="25.0" prefWidth="105.0" text="add Hist Point" />
+                              <Button fx:id="deleteHistButton" layoutX="182.0" layoutY="604.0" mnemonicParsing="false" onAction="#deleteHist" text="delete Hist Point" />
+                              <TextArea fx:id="histTextArea" layoutX="16.0" layoutY="638.0" prefHeight="97.0" prefWidth="294.0" />
                                     </children>
                                 </AnchorPane>
                             </content>
